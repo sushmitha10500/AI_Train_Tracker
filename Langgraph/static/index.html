@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚆 Indian Railway Route Planner - AI Powered</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-gradient"></div>
+    <div class="background-pattern"></div>
+    
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">🚆</div>
+                <div class="logo-text">
+                    <h1>Railway Route Planner</h1>
+                    <p>AI-Powered Journey Planning</p>
+                </div>
+            </div>
+            <div class="status-badge" id="statusBadge">
+                <span class="status-dot"></span>
+                <span>System Ready</span>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-card">
+                <div class="search-header">
+                    <h2>Find Your Perfect Route</h2>
+                    <p>Ask in natural language - our AI understands you</p>
+                </div>
+                
+                <div class="search-input-wrapper">
+                    <div class="search-icon">🔍</div>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder='e.g., "Find trains from Mumbai to Delhi" or "Goa to Vaishno Devi"'
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" class="search-btn">
+                        <span class="btn-text">Search Trains</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                </div>
+
+                <div class="quick-searches">
+                    <span class="quick-label">Quick Searches:</span>
+                    <button class="quick-btn" data-query="Find trains from Delhi to Mumbai">Delhi → Mumbai</button>
+                    <button class="quick-btn" data-query="Find trains from Bangalore to Chennai">Bangalore → Chennai</button>
+                    <button class="quick-btn" data-query="Find trains from Vaishno Devi to Varanasi">Vaishno Devi → Varanasi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Section -->
+        <div class="loading-section" id="loadingSection" style="display: none;">
+            <div class="loading-card">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+                <h3 class="loading-title">Finding Best Routes...</h3>
+                <p class="loading-text" id="loadingText">Analyzing railway network with AI</p>
+                <div class="loading-steps">
+                    <div class="step" id="step1">
+                        <span class="step-icon">🤖</span>
+                        <span>Extracting intent</span>
+                    </div>
+                    <div class="step" id="step2">
+                        <span class="step-icon">🚉</span>
+                        <span>Finding stations</span>
+                    </div>
+                    <div class="step" id="step3">
+                        <span class="step-icon">🔄</span>
+                        <span>Searching routes</span>
+                    </div>
+                    <div class="step" id="step4">
+                        <span class="step-icon">✨</span>
+                        <span>Optimizing results</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <!-- Journey Info -->
+            <div class="journey-info" id="journeyInfo"></div>
+
+            <!-- AI Recommendation -->
+            <div class="ai-recommendation" id="aiRecommendation"></div>
+
+            <!-- Available Trains -->
+            <div class="trains-container" id="trainsContainer"></div>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-section" id="errorSection" style="display: none;">
+            <div class="error-card">
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title" id="errorTitle">Oops! Something went wrong</h3>
+                <p class="error-message" id="errorMessage"></p>
+                <button class="retry-btn" id="retryBtn">Try Again</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by OpenAI GPT-4 & LangGraph | Indian Railway Data from RailRadar API</p>
+            <p class="footer-note">Real-time route planning with AI-powered intelligence</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
