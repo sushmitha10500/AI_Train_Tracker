@@ -266,7 +266,9 @@ A --> OAI
 B --> OAI
 C --> RR
 
-----
+```mermaid
+...diagram...
+```
 
 ##  📡 API Endpoints
 
