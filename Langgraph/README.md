@@ -219,8 +219,6 @@ workflow.add_edge("generate_response", END)              # Step 4 → Exit
 
 ## 🧠 System Architecture
 
-## 🧠 System Architecture
-
 ```mermaid
 flowchart LR
 
@@ -266,8 +264,7 @@ A --> OAI
 B --> OAI
 C --> RR
 
-```mermaid
-...diagram...
+
 ```
 
 ##  📡 API Endpoints
