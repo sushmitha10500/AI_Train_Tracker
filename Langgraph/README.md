@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" />
+  <img src="https://img.shields.io/badge/Python-3.10-blue.svg" />
   <img src="https://img.shields.io/badge/Framework-Flask-black.svg" />
   <img src="https://img.shields.io/badge/AI-OpenAI%20GPT--4o--mini-green.svg" />
   <img src="https://img.shields.io/badge/Workflow-LangGraph-orange.svg" />
