@@ -219,50 +219,54 @@ workflow.add_edge("generate_response", END)              # Step 4 → Exit
 
 ## 🧠 System Architecture
 
+## 🧠 System Architecture
+
 ```mermaid
 flowchart LR
 
-%% ================= FRONTEND =================
-subgraph Frontend (Client Side)
-    U[👤 User]
-    UI[🌐 Web UI<br>HTML / CSS / JS]
-    
+%% ===== FRONTEND =====
+subgraph Frontend
+    U["👤 User"]
+    UI["🌐 Web UI (HTML/CSS/JS)"]
+
     U -->|Enter Query| UI
-    UI -->|POST /api/smart_query| API
 end
 
-%% ================= BACKEND =================
-subgraph Backend (Server Side - Flask + LangGraph)
+%% ===== BACKEND =====
+subgraph Backend
+    API["⚙️ Flask API (/api/smart_query)"]
 
-    API[⚙️ Flask API<br>/api/smart_query]
+    subgraph LangGraph
+        A["extract_intent"]
+        B["convert_stations"]
+        C["find_routes"]
+        D["generate_response"]
 
-    subgraph LangGraph Workflow
-        A[extract_intent]
-        B[convert_stations]
-        C[find_routes]
-        D[generate_response]
-
-        A --> B --> C --> D
+        A --> B
+        B --> C
+        C --> D
     end
 
     API --> A
     D --> API
 end
 
-%% ================= EXTERNAL SERVICES =================
-subgraph External Services
-    OAI[🤖 OpenAI API<br>GPT-4o-mini]
-    RR[🚆 RailRadar API]
+%% ===== EXTERNAL SERVICES =====
+subgraph External_Services
+    OAI["🤖 OpenAI API (GPT-4o-mini)"]
+    RR["🚆 RailRadar API"]
 end
 
-%% ================= CONNECTIONS =================
-A -->|Extract Intent| OAI
-B -->|Resolve Stations| OAI
-C -->|Fetch Train Data| RR
-
-API -->|Return JSON Response| UI
+%% ===== CONNECTIONS =====
+UI -->|POST Request| API
+API -->|Response JSON| UI
 UI -->|Display Results| U
----
+
+A --> OAI
+B --> OAI
+C --> RR
+
+----
 
 ##  📡 API Endpoints
 
