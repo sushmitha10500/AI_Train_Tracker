@@ -57,15 +57,54 @@
 
 ## 🧠 System Architecture
 
-```text
-User → Frontend → Flask API → LangGraph Workflow
-                                  ↓
-                        OpenAI + Railway APIs
-                                  ↓
-                            JSON Response
-```
 
----
+```mermaid
+flowchart LR
+
+%% ===== FRONTEND =====
+subgraph Frontend
+    U["👤 User"]
+    UI["🌐 Web UI (HTML/CSS/JS)"]
+
+    U -->|Enter Query| UI
+end
+
+%% ===== BACKEND =====
+subgraph Backend
+    API["⚙️ Flask API (/api/smart_query)"]
+
+    subgraph LangGraph
+        A["extract_intent"]
+        B["convert_stations"]
+        C["find_routes"]
+        D["generate_response"]
+
+        A --> B
+        B --> C
+        C --> D
+    end
+
+    API --> A
+    D --> API
+end
+
+%% ===== EXTERNAL SERVICES =====
+subgraph External_Services
+    OAI["🤖 OpenAI API (GPT-4o-mini)"]
+    RR["🚆 RailRadar API"]
+end
+
+%% ===== CONNECTIONS =====
+UI -->|POST Request| API
+API -->|Response JSON| UI
+UI -->|Display Results| U
+
+A --> OAI
+B --> OAI
+C --> RR
+
+
+```
 
 ## 📁 Project Structure
 
@@ -214,58 +253,6 @@ workflow.add_edge("generate_response", END)              # Step 4 → Exit
 **Code Location**: Lines 919-923 in `main.py`
 
 ---
-
-## Complete Data Flow Example
-
-## 🧠 System Architecture
-
-```mermaid
-flowchart LR
-
-%% ===== FRONTEND =====
-subgraph Frontend
-    U["👤 User"]
-    UI["🌐 Web UI (HTML/CSS/JS)"]
-
-    U -->|Enter Query| UI
-end
-
-%% ===== BACKEND =====
-subgraph Backend
-    API["⚙️ Flask API (/api/smart_query)"]
-
-    subgraph LangGraph
-        A["extract_intent"]
-        B["convert_stations"]
-        C["find_routes"]
-        D["generate_response"]
-
-        A --> B
-        B --> C
-        C --> D
-    end
-
-    API --> A
-    D --> API
-end
-
-%% ===== EXTERNAL SERVICES =====
-subgraph External_Services
-    OAI["🤖 OpenAI API (GPT-4o-mini)"]
-    RR["🚆 RailRadar API"]
-end
-
-%% ===== CONNECTIONS =====
-UI -->|POST Request| API
-API -->|Response JSON| UI
-UI -->|Display Results| U
-
-A --> OAI
-B --> OAI
-C --> RR
-
-
-```
 
 ##  📡 API Endpoints
 
