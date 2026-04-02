@@ -217,123 +217,51 @@ workflow.add_edge("generate_response", END)              # Step 4 → Exit
 
 ## Complete Data Flow Example
 
-Here's how data transforms through the entire graph:
+## 🧠 System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│ INITIAL STATE (User Request)                                │
-├─────────────────────────────────────────────────────────────┤
-│ query: "Find trains from Vaishno Devi to Varanasi"         │
-│ intent: ""                                                  │
-│ extracted_params: {}                                        │
-│ api_results: {}                                             │
-│ final_response: ""                                          │
-│ errors: []                                                  │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AFTER extract_intent NODE                                   │
-├─────────────────────────────────────────────────────────────┤
-│ query: "Find trains from Vaishno Devi to Varanasi"         │
-│ intent: "find_trains"  ← ADDED                             │
-│ extracted_params: {                                         │
-│   "from": "Vaishno Devi",  ← ADDED                         │
-│   "to": "Varanasi"  ← ADDED                                │
-│ }                                                           │
-│ api_results: {}                                             │
-│ final_response: ""                                          │
-│ errors: []                                                  │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AFTER convert_stations NODE                                 │
-├─────────────────────────────────────────────────────────────┤
-│ query: "Find trains from Vaishno Devi to Varanasi"         │
-│ intent: "find_trains"                                       │
-│ extracted_params: {                                         │
-│   "from": "Vaishno Devi",                                   │
-│   "to": "Varanasi",                                         │
-│   "from_code": "SVDK",  ← ADDED                            │
-│   "from_info": {  ← ADDED                                  │
-│     "code": "SVDK",                                         │
-│     "name": "SHRI MATA VAISHNO DEVI KATRA",                │
-│     "nearest_stations": [...]                              │
-│   },                                                        │
-│   "to_code": "BSB",  ← ADDED                               │
-│   "to_info": {  ← ADDED                                    │
-│     "code": "BSB",                                          │
-│     "name": "VARANASI JUNCTION",                           │
-│     "nearest_stations": [...]                              │
-│   }                                                         │
-│ }                                                           │
-│ api_results: {}                                             │
-│ final_response: ""                                          │
-│ errors: []                                                  │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AFTER find_routes NODE                                      │
-├─────────────────────────────────────────────────────────────┤
-│ [Previous state unchanged...]                               │
-│ api_results: {  ← POPULATED                                │
-│   "routes": [                                               │
-│     {                                                       │
-│       "type": "connecting",                                 │
-│       "legs": 2,                                            │
-│       "durationMins": 720,                                  │
-│       "segments": [                                         │
-│         {                                                   │
-│           "trainNumber": "12472",                           │
-│           "trainName": "SVDK JAT SF EXP",                   │
-│           "from": "SVDK",                                   │
-│           "to": "JAT",                                      │
-│           "departure": "14:30",                             │
-│           "arrival": "16:00"                                │
-│         },                                                  │
-│         {                                                   │
-│           "trainNumber": "12318",                           │
-│           "trainName": "AKAL TAKHT EXP",                    │
-│           "from": "JAT",                                    │
-│           "to": "BSB",                                      │
-│           "departure": "18:30",                             │
-│           "arrival": "10:30"                                │
-│         }                                                   │
-│       ],                                                    │
-│       "layovers": [                                         │
-│         {                                                   │
-│           "station": "JAT",                                 │
-│           "waitingMins": 150,                               │
-│           "recommendation": {...}                           │
-│         }                                                   │
-│       ]                                                     │
-│     }                                                       │
-│   ],                                                        │
-│   "from_info": {...},                                       │
-│   "to_info": {...}                                          │
-│ }                                                           │
-│ errors: []                                                  │
-└─────────────────────────────────────────────────────────────┘
-                            ↓
-┌─────────────────────────────────────────────────────────────┐
-│ AFTER generate_response NODE (FINAL)                        │
-├─────────────────────────────────────────────────────────────┤
-│ [All previous state...]                                     │
-│ final_response: {  ← FORMATTED RESPONSE                    │
-│   "success": true,                                          │
-│   "journey": {                                              │
-│     "from": "SHRI MATA VAISHNO DEVI KATRA (SVDK)",         │
-│     "to": "VARANASI JUNCTION (BSB)",                       │
-│     "totalOptions": 1                                       │
-│   },                                                        │
-│   "aiRecommendation": {                                     │
-│     "recommendedOption": 1,                                 │
-│     "reason": "✅ Best Available: 2-train via JAT",        │
-│     "totalJourneyTime": "12h 0m"                            │
-│   },                                                        │
-│   "availableTrains": [...]                                  │
-│ }                                                           │
-└─────────────────────────────────────────────────────────────┘
-```
+```mermaid
+flowchart LR
+
+%% ================= FRONTEND =================
+subgraph Frontend (Client Side)
+    U[👤 User]
+    UI[🌐 Web UI<br>HTML / CSS / JS]
+    
+    U -->|Enter Query| UI
+    UI -->|POST /api/smart_query| API
+end
+
+%% ================= BACKEND =================
+subgraph Backend (Server Side - Flask + LangGraph)
+
+    API[⚙️ Flask API<br>/api/smart_query]
+
+    subgraph LangGraph Workflow
+        A[extract_intent]
+        B[convert_stations]
+        C[find_routes]
+        D[generate_response]
+
+        A --> B --> C --> D
+    end
+
+    API --> A
+    D --> API
+end
+
+%% ================= EXTERNAL SERVICES =================
+subgraph External Services
+    OAI[🤖 OpenAI API<br>GPT-4o-mini]
+    RR[🚆 RailRadar API]
+end
+
+%% ================= CONNECTIONS =================
+A -->|Extract Intent| OAI
+B -->|Resolve Stations| OAI
+C -->|Fetch Train Data| RR
+
+API -->|Return JSON Response| UI
+UI -->|Display Results| U
 ---
 
 ##  📡 API Endpoints
